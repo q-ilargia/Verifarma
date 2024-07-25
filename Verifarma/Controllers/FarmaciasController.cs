@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Verifarma.Data;
+using Verifarma.Interfaces;
 using Verifarma.Models;
 using Verifarma.Services;
 
@@ -14,9 +15,9 @@ namespace Verifarma.Controllers
     public class FarmaciasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly FarmacyService _farmacyService;
+        private readonly IFarmacyService _farmacyService;
 
-        public FarmaciasController(ApplicationDbContext context, FarmacyService farmacyService)
+        public FarmaciasController(ApplicationDbContext context, IFarmacyService farmacyService)
         {
             this._context = context;
             this._farmacyService = farmacyService;
@@ -26,8 +27,8 @@ namespace Verifarma.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFarmaciaCercana(float lat, float lon)
         {
-            var dist = this._farmacyService.GetFarmaciaCercana(lat, lon);
-            if (dist.Result < 0.0)
+            var dist = await this._farmacyService.GetFarmaciaCercana(lat, lon);
+            if (dist == null)
             {
                 return NotFound();
             }
@@ -39,7 +40,7 @@ namespace Verifarma.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = this._farmacyService.GetFarmacia(id);
+            var result = await this._farmacyService.GetFarmacia(id);
             if (result == null)
             {
                 return NotFound();
