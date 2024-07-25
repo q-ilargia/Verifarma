@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  verifarma:
+    image: ${DOCKER_REGISTRY-}verifarma
+    build:
+      context: .
+      dockerfile: Verifarma/Dockerfile
